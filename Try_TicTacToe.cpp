@@ -4,26 +4,29 @@
 #include <conio.h>
 #include <string>
 #include <random>
+#include <time.h>
 
 using namespace std;
 
 void inputType_In(char typin[3][3], int x, int y) {
-    typin[x][y] = 'x';
+    if (typin[x][y] != 'x' && typin[x][y] != 'o') typin[x][y] = 'x';
+    else printf("Already Have Symbol, Try Again");
 }
 
-bool cndtnWn(char boxId[3][3]) {
-    if (boxId[0][0] == 'x' && boxId[1][0] == 'x' && boxId[2][0] == 'x') return true;
-    else if (boxId[0][0] == 'x' && boxId[1][1] == 'x' &&boxId[2][2] == 'x') return true;
-    else if (boxId[0][0] == 'x' && boxId[0][1] == 'x' && boxId[0][2] == 'x') return true;
-    else if (boxId[1][0] == 'x' && boxId[1][1] == 'x' && boxId[1][2] == 'x') return true;
-    else if (boxId[2][0] == 'x' && boxId[2][1] == 'x' && boxId[2][2] == 'x') return true;
-    else if (boxId[2][0] == 'x' && boxId[1][1] == 'x' && boxId[0][0] == 'x') return true;
+bool cndtnWn(char boxId[3][3], char smbl) {
+    if (boxId[0][0] == smbl && boxId[1][0] == smbl && boxId[2][0] == smbl) return true;
+    else if (boxId[0][0] == smbl && boxId[1][1] == smbl && boxId[2][2] == smbl) return true;
+    else if (boxId[0][0] == smbl && boxId[0][1] == smbl && boxId[0][2] == smbl) return true;
+    else if (boxId[1][0] == smbl && boxId[1][1] == smbl && boxId[1][2] == smbl) return true;
+    else if (boxId[2][0] == smbl && boxId[2][1] == smbl && boxId[2][2] == smbl) return true;
+    else if (boxId[2][0] == smbl && boxId[1][1] == smbl && boxId[0][0] == smbl) return true;
     else return false;
 }
 
 int main() {
     char blnkspcs[3][3];
-    bool plyIn, wIn;
+
+    bool Wn;
 
     int inputRow = NULL;
     char inputColoumn = NULL;
@@ -51,9 +54,26 @@ int main() {
         else if (inputRow == 3 && inputColoumn == 'B') inputType_In(blnkspcs, 2, 1);
         else if (inputRow == 3 && inputColoumn == 'C') inputType_In(blnkspcs, 2, 2);
 
-        if (inputRow != NULL && inputColoumn != NULL) printf("Computer chance \n");
+        if (inputRow != NULL && inputColoumn != NULL) {
+            srand(time(NULL));
+            auto inputRow_rndm = 0, inputColoumn_rndm = 0;
+            while (blnkspcs[inputRow_rndm][inputColoumn_rndm] == 'x' || blnkspcs[inputRow_rndm][inputColoumn_rndm] == 'o') {
+                inputRow_rndm = rand() % 3;
+                inputColoumn_rndm = rand() % 3;
+            }
+            cout << "Row : " << inputRow_rndm << ", Coloumn : " << inputColoumn_rndm << endl;
+            blnkspcs[inputRow_rndm][inputColoumn_rndm] = 'o';
+        }
 
-        if (cndtnWn(blnkspcs) == true) printf("You Win \n");
+        for (int i = 0; i < 2; i++)
+            for (int j = 0; j < 2; j++)
+                cout << "Draw : " << (blnkspcs[i][j] != '\0') << endl;
 
-    } while (true);
+        Wn = cndtnWn(blnkspcs, 'x') || cndtnWn(blnkspcs, 'o');
+
+    } while (!Wn);
+
+    printf("\n");
+    cndtnWn(blnkspcs, 'x') ? printf("You Win") : printf("Computer Win");
+
 }
